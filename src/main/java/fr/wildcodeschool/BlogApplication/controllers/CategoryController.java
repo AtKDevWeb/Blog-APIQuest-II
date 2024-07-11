@@ -42,6 +42,14 @@ public class CategoryController {
         }
         return ResponseEntity.ok().body(savedCategory);
     }
+    @GetMapping("/search-name")
+    public ResponseEntity<List<Category>> searchCategoryByName(@RequestParam String name) {
+        List<Category> categories = categoryRepository.findByName(name);
+        if (categories.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(categories);
+    }
     //UpDate
     @PutMapping("/{id}")
     public ResponseEntity<Category> upDateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {

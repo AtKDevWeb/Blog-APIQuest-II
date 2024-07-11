@@ -43,6 +43,15 @@ public class TagController {
        }
        return ResponseEntity.ok().body(tag);
     }
+    //ReadAllByName
+    @GetMapping("search-name")
+    public ResponseEntity<List<Tag>> searchTag(@RequestParam String name) {
+        List<Tag> tags = tagRepository.findByName(name);
+        if (tags.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(tags);
+    }
     //Update One
     @PutMapping("/{id}")
     public ResponseEntity<Tag> updateTag(@PathVariable Long id, @RequestBody Tag tagDetails) {

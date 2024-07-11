@@ -42,6 +42,42 @@ public class ArticleController {
         }
         return ResponseEntity.ok().body(savedArticle);
     }
+    //ReadByTitle
+    @GetMapping("/search-title")
+    public ResponseEntity<List<Article>> getArticlesByTitle(@RequestParam String searchTerms) {
+        List<Article> articles = articleRepository.findByTitle(searchTerms);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(articles);
+    }
+    //ReadByContentContaining
+    @GetMapping("/search-stringInContent")
+    public ResponseEntity<List<Article>> getArticlesByStringInContent(@RequestParam String searchTerms) {
+        List<Article> articles = articleRepository.findByContentContaining(searchTerms);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(articles);
+    }
+    //ReadByDateCreation
+    @GetMapping("/search-dateCreation")
+    public ResponseEntity<List<Article>> getArticlesByDateCreation(@RequestParam LocalDateTime dateCreation) {
+        List<Article> articles = articleRepository.findByStartDateAfter(dateCreation);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(articles);
+    }
+    //Read 5 top By Order By Date Created Desc
+    @GetMapping("/search-fiveLast")
+    public ResponseEntity<List<Article>> getArticlesByFiveLast() {
+        List<Article> articles = articleRepository.findTop5ByOrderByDateCreatedDesc();
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(articles);
+    }
     //Update
     @PutMapping("/{id}")
     public ResponseEntity<Article> updateArticle(@PathVariable Long id, @RequestBody Article articleDetails) {
