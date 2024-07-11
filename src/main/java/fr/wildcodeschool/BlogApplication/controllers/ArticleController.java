@@ -1,7 +1,9 @@
 package fr.wildcodeschool.BlogApplication.controllers;
 
 import fr.wildcodeschool.BlogApplication.models.Article;
+import fr.wildcodeschool.BlogApplication.models.Category;
 import fr.wildcodeschool.BlogApplication.repositories.ArticleRepository;
+import fr.wildcodeschool.BlogApplication.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,21 +11,36 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/articles")
 public class ArticleController {
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     //Methode CRUD
     //Create
     @PostMapping
     public ResponseEntity<Article> addArticle(@RequestBody Article article) {
         article.setCreationDate(LocalDateTime.now());
+        article.setUpdateDate(LocalDateTime.now());
+
+
+        if (article.getCategory() !=null) {
+            Optional<Category> optionalCategory = categoryRepository.findById(article.getCategory().getId());
+            if (!optionalCategory.isPresent()) {
+                return ResponseEntity.badRequest().body(null);
+            }
+            Category category = optionalCategory.get();
+            article.setCategory(category);
+        }
         Article savedArticle = articleRepository.save(article);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
     }
+
     //ReadALl
     @GetMapping
     public ResponseEntity<List<Article>> getAllArticles() {
@@ -88,6 +105,16 @@ public class ArticleController {
             savedArticle.setTitle(articleDetails.getTitle());
             savedArticle.setContent(articleDetails.getContent());
             savedArticle.setUpdateDate(LocalDateTime.now());
+
+            // Mise à jour de la catégorie
+            if (articleDetails.getCategory() != null) {
+                Optional<Category> optionalCategory = categoryRepository.findById(savedArticle.getCategory().getId());
+                if (!optionalCategory.isPresent()) {
+                    return ResponseEntity.badRequest().body(null);
+                }
+                Category category = optionalCategory.get();
+                savedArticle.setCategory(category);
+            }
             Article updatedArticle = articleRepository.save(savedArticle);
             return ResponseEntity.ok().body(updatedArticle);
         }

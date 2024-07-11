@@ -19,31 +19,23 @@ public class Article {
     @Column(nullable = false, updatable = false)
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
-    @Column(nullable = false)
-    private long category_id;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public Article() {
     }
-    public Article(String title, String content, long category_id) {
+    public Article(String title, String content) {
         this.title = title;
         this.content = content;
-        this.category_id = category_id;
     }
 
-    public Article(String title, String content, long category_id, LocalDateTime creationDate, LocalDateTime upDate) {
+    public Article(String title, String content, LocalDateTime creationDate, LocalDateTime upDate) {
         this.title = title;
         this.content = content;
-        this.category_id = category_id;
         this.creationDate = creationDate;
         this.updateDate = upDate;
-    }
-
-    public long getCategory_id() {
-        return category_id;
-    }
-
-    public void setCategory_id(long category_id) {
-        this.category_id = category_id;
     }
 
     public String getContent() {
@@ -84,5 +76,13 @@ public class Article {
 
     public void setUpdateDate(LocalDateTime upDate) {
         this.updateDate = upDate;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
