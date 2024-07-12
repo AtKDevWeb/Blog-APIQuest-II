@@ -1,8 +1,6 @@
 package fr.wildcodeschool.BlogApplication.models;
 
 import jakarta.persistence.*;
-
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,10 +12,13 @@ public class Article {
 
     @Column(nullable = false, length = 100)
     private String title;
+
     @Column(columnDefinition = "LONGTEXT")
     private String content;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime creationDate;
+
     private LocalDateTime updateDate;
 
     @ManyToOne
@@ -31,11 +32,11 @@ public class Article {
         this.content = content;
     }
 
-    public Article(String title, String content, LocalDateTime creationDate, LocalDateTime upDate) {
+    public Article(String title, String content, LocalDateTime creationDate, LocalDateTime updateDate) {
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;
-        this.updateDate = upDate;
+        this.updateDate = updateDate;
     }
 
     public String getContent() {

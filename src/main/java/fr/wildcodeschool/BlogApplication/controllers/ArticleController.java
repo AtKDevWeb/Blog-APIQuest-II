@@ -18,6 +18,7 @@ import java.util.Optional;
 public class ArticleController {
     @Autowired
     private ArticleRepository articleRepository;
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -31,7 +32,7 @@ public class ArticleController {
 
         if (article.getCategory() !=null) {
             Optional<Category> optionalCategory = categoryRepository.findById(article.getCategory().getId());
-            if (!optionalCategory.isPresent()) {
+            if (optionalCategory.isPresent()) {
                 return ResponseEntity.badRequest().body(null);
             }
             Category category = optionalCategory.get();
@@ -80,7 +81,7 @@ public class ArticleController {
     //ReadByDateCreation
     @GetMapping("/search-dateCreation")
     public ResponseEntity<List<Article>> getArticlesByDateCreation(@RequestParam LocalDateTime dateCreation) {
-        List<Article> articles = articleRepository.findByStartDateAfter(dateCreation);
+        List<Article> articles = articleRepository.findByCreationDateAfter(dateCreation);
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -89,7 +90,7 @@ public class ArticleController {
     //Read 5 top By Order By Date Created Desc
     @GetMapping("/search-fiveLast")
     public ResponseEntity<List<Article>> getArticlesByFiveLast() {
-        List<Article> articles = articleRepository.findTop5ByOrderByDateCreatedDesc();
+        List<Article> articles = articleRepository.findTop5ByOrderByCreationDateDesc();
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -109,7 +110,7 @@ public class ArticleController {
             // Mise à jour de la catégorie
             if (articleDetails.getCategory() != null) {
                 Optional<Category> optionalCategory = categoryRepository.findById(savedArticle.getCategory().getId());
-                if (!optionalCategory.isPresent()) {
+                if (optionalCategory.isPresent()) {
                     return ResponseEntity.badRequest().body(null);
                 }
                 Category category = optionalCategory.get();
